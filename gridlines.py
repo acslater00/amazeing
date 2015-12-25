@@ -172,22 +172,22 @@ class GridlineDetector(object):
         return row_gridlines, col_gridlines
 
 
-    def r_to_p(self, i):
+    def rtop(self, i):
         """row gridline ordinal to pixel location"""
         group = self.row_gridline_groups[i]
         return int(sum(group)/float(len(group)))
 
-    def c_to_p(self, i):
+    def ctop(self, i):
         """row gridline ordinal to pixel location"""
         group = self.col_gridline_groups[i]
         return int(sum(group)/float(len(group)))
 
-    def n_to_p(self, row, col):
+    def ntop(self, row, col):
         """node position to pixel (row, col)"""
 
         # row position
-        row_pos = (self.r_to_p(row) + self.r_to_p(row + 1)) / 2
-        col_pos = (self.c_to_p(col) + self.c_to_p(col + 1)) / 2
+        row_pos = (self.rtop(row) + self.rtop(row + 1)) / 2
+        col_pos = (self.ctop(col) + self.ctop(col + 1)) / 2
 
         return row_pos, col_pos
 
@@ -231,7 +231,7 @@ class GridlineDetector(object):
 
         pixels = []
         for r in row_pixels:
-            for c in range(self.c_to_p(col_from), self.c_to_p(col_to)):
+            for c in range(self.ctop(col_from), self.ctop(col_to)):
                 pixels.append(self.array[r][c])
 
         is_gray = [self._pixel_is(p, self.STATE_GRAY) for p in pixels]
@@ -245,7 +245,7 @@ class GridlineDetector(object):
         col_pixels = self.col_gridline_groups[col_gridline]
 
         pixels = []
-        for r in range(self.r_to_p(row_from), self.r_to_p(row_to)):
+        for r in range(self.rtop(row_from), self.rtop(row_to)):
             for c in col_pixels:
                 pixels.append(self.array[r][c])
 
