@@ -254,5 +254,15 @@ class GridlineDetector(object):
         return cnt_gray / float(len(pixels)) > .8
 
 
+    def is_move_valid(self, row, col, move):
+        if move == "left":
+            return not self.is_col_edge(col, row)
+        if move == "right":
+            return not self.is_col_edge(col + 1, row)
+        if move == "up":
+            return not self.is_row_edge(row, col)
+        if move == "down":
+            return not self.is_row_edge(row + 1, col)
+
 
 
