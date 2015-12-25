@@ -182,6 +182,15 @@ class GridlineDetector(object):
         group = self.col_gridline_groups[i]
         return int(sum(group)/float(len(group)))
 
+    def n_to_p(self, row, col):
+        """node position to pixel (row, col)"""
+
+        # row position
+        row_pos = (self.r_to_p(row) + self.r_to_p(row + 1)) / 2
+        col_pos = (self.c_to_p(col) + self.c_to_p(col + 1)) / 2
+
+        return row_pos, col_pos
+
     ### Edge Detection
 
     """
