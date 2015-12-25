@@ -170,3 +170,80 @@ class GridlineDetector(object):
         self.col_gridline_groups = col_gridlines
 
         return row_gridlines, col_gridlines
+
+
+    def r_to_p(self, i):
+        """row gridline ordinal to pixel location"""
+        group = self.row_gridline_groups[i]
+        return int(sum(group)/float(len(group)))
+
+    def c_to_p(self, i):
+        """row gridline ordinal to pixel location"""
+        group = self.col_gridline_groups[i]
+        return int(sum(group)/float(len(group)))
+
+    ### Edge Detection
+
+    """
+    Assume we have 3 rows and 3 columns, meaning
+    4 row gridlines and 4 column gridlines
+
+    Row spaces
+    |----|----|    |
+
+    In this example: [True, True, False]
+
+    Col Spaces
+
+    -
+    |
+    |
+    |
+    -
+
+
+
+    -
+    |
+    |
+    |
+    -
+
+    In this example, [True, False, True]
+
+    """
+
+    # is row edge
+    def is_row_edge(self, row_gridline, position):
+        col_from = position
+        col_to = position + 1
+
+        row_pixels = self.row_gridline_groups[row_gridline]
+
+        pixels = []
+        for r in row_pixels:
+            for c in range(self.c_to_p(col_from), self.c_to_p(col_to)):
+                pixels.append(self.array[r][c])
+
+        is_gray = [self._pixel_is(p, self.STATE_GRAY) for p in pixels]
+        cnt_gray = sum(filter(None, is_gray))
+        return cnt_gray / float(len(pixels)) > .8
+
+    def is_col_edge(self, col_gridline, position):
+        row_from = position
+        row_to = position + 1
+
+        col_pixels = self.col_gridline_groups[col_gridline]
+
+        pixels = []
+        for r in range(self.r_to_p(row_from), self.r_to_p(row_to)):
+            for c in col_pixels:
+                pixels.append(self.array[r][c])
+
+        is_gray = [self._pixel_is(p, self.STATE_GRAY) for p in pixels]
+        cnt_gray = sum(filter(None, is_gray))
+        return cnt_gray / float(len(pixels)) > .8
+
+
+
+
