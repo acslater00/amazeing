@@ -288,16 +288,20 @@ class GridlineDetector(object):
             from_node = node.id
             if self.is_move_valid(row, col, "left"):
                 to_node = graph.rctoi(row, col - 1)
-                graph.add_edge(from_node, to_node)
+                if to_node >= 0:
+                    graph.add_edge(from_node, to_node)
             if self.is_move_valid(row, col, "right"):
                 to_node = graph.rctoi(row, col + 1)
-                graph.add_edge(from_node, to_node)
+                if to_node >= 0:
+                    graph.add_edge(from_node, to_node)
             if self.is_move_valid(row, col, "up"):
                 to_node = graph.rctoi(row - 1, col)
-                graph.add_edge(from_node, to_node)
+                if to_node >= 0:
+                    graph.add_edge(from_node, to_node)
             if self.is_move_valid(row, col, "down"):
                 to_node = graph.rctoi(row + 1, col)
-                graph.add_edge(from_node, to_node)
+                if to_node >= 0:
+                    graph.add_edge(from_node, to_node)
 
         return graph
 

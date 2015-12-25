@@ -24,13 +24,20 @@ class MazeGraph(object):
         self.col_count = col_count
 
     def rctoi(self, row, col):
+        if row >= self.row_count:
+            return -1
+        if row < 0:
+            return -1
+        if col >= self.col_count:
+            return -1
+        if col < 0:
+            return -1
         i = row * self.row_count + col
         return i
 
     def itorc(self, i):
         row, col = divmod(i, self.row_count)
         return row, col
-
 
     def add_node(self, node):
         self.nodes.append(node)
@@ -43,31 +50,32 @@ class MazeGraph(object):
             self.edges[to_node_id].append(from_node_id)
 
 
-# def dijsktra(graph, initial):
-#   visited = {initial: 0}
-#   path = {}
 
-#   nodes = set(graph.nodes)
+def dijsktra(graph, initial):
+    visited = {initial: 0}
+    path = {}
 
-#   while nodes:
-#     min_node = None
-#     for node in nodes:
-#       if node in visited:
-#         if min_node is None:
-#           min_node = node
-#         elif visited[node] < visited[min_node]:
-#           min_node = node
+    nodes = set([n.id for n in graph.nodes])
 
-#     if min_node is None:
-#       break
+    while nodes:
+        min_node = None
+        for node in nodes:
+            if node in visited:
+                if min_node is None:
+                    min_node = node
+                elif visited[node] < visited[min_node]:
+                    min_node = node
 
-#     nodes.remove(min_node)
-#     current_weight = visited[min_node]
+        if min_node is None:
+            break
 
-#     for edge in graph.edges[min_node]:
-#       weight = current_weight + graph.distance[(min_node, edge)]
-#       if edge not in visited or weight < visited[edge]:
-#         visited[edge] = weight
-#         path[edge] = min_node
+        nodes.remove(min_node)
+        current_weight = visited[min_node]
 
-#   return visited, path
+        for edge in graph.edges[min_node]:
+            weight = current_weight + 1
+            if edge not in visited or weight < visited[edge]:
+                visited[edge] = weight
+                path[edge] = min_node
+
+    return visited, path
