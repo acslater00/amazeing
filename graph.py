@@ -79,3 +79,20 @@ def dijsktra(graph, initial):
                 path[edge] = min_node
 
     return visited, path
+
+def min_path(graph, initial, terminal):
+    node_distance, path = dijsktra(graph, initial)
+
+    distance = node_distance[terminal]
+    backpath = [terminal]
+    end = terminal
+    try:
+        while end != initial:
+            end = path[end]
+            backpath.append(end)
+        path = list(reversed(backpath))
+    except KeyError:
+        path = None
+
+    return distance, path
+
