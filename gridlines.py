@@ -1,4 +1,5 @@
 # gridlines detector
+from graph import *
 
 class GridlineDetector(object):
 
@@ -253,7 +254,6 @@ class GridlineDetector(object):
         cnt_gray = sum(filter(None, is_gray))
         return cnt_gray / float(len(pixels)) > .8
 
-
     def is_move_valid(self, row, col, move):
         if move == "left":
             return not self.is_col_edge(col, row)
@@ -263,6 +263,45 @@ class GridlineDetector(object):
             return not self.is_row_edge(row, col)
         if move == "down":
             return not self.is_row_edge(row + 1, col)
+
+    def generate_graph(self):
+        node_id_ctr = 0
+        graph = MazeGraph(self.num_rows, self.num_cols)
+
+        for row in range(self.num_rows):
+            for col in range(self.num_cols):
+
+                node = Node()
+                node.id = node_id_ctr
+                node.row = row
+                node.col = col
+                node.graph = graph
+                graph.add_node(node)
+
+                node_id_ctr += 1
+
+        # row col to node id
+
+        # for each node, add edges
+        for node in graph.nodes:
+            row, col = node.row, node.col
+            from_node = node.id
+            if self.is_move_valid(row, col, "left"):
+                to_node = graph.rctoi(row, col - 1)
+                graph.add_edge(from_node, to_node)
+            if self.is_move_valid(row, col, "right"):
+                to_node = graph.rctoi(row, col + 1)
+                graph.add_edge(from_node, to_node)
+            if self.is_move_valid(row, col, "up"):
+                to_node = graph.rctoi(row - 1, col)
+                graph.add_edge(from_node, to_node)
+            if self.is_move_valid(row, col, "down"):
+                to_node = graph.rctoi(row + 1, col)
+                graph.add_edge(from_node, to_node)
+
+        return graph
+
+
 
 
 
