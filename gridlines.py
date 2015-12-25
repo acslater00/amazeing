@@ -9,6 +9,26 @@ class GridlineDetector(object):
     def __init__(self, arr):
         self.array = arr
 
+        self.row_gridline_groups = []
+        self.col_gridline_groups = []
+
+    @property
+    def num_rows(self):
+        return len(self.row_gridline_groups) - 1
+
+    @property
+    def num_row_gridlines(self):
+        return len(self.row_gridline_groups)
+
+    @property
+    def num_cols(self):
+        return len(self.col_gridline_groups) - 1
+
+    @property
+    def num_col_gridlines(self):
+        return len(self.col_gridline_groups)
+
+
     @staticmethod
     def _pixel_is_white(pixel):
         return pixel > 220
@@ -145,5 +165,8 @@ class GridlineDetector(object):
             if self.is_col_gridline(i):
                 col_indices.append(i)
         col_gridlines = self._group_lines(col_indices)
+
+        self.row_gridline_groups = row_gridlines
+        self.col_gridline_groups = col_gridlines
 
         return row_gridlines, col_gridlines

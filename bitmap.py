@@ -9,3 +9,8 @@ blob = image.make_blob(format='gray')
 pixels = map(ord, blob)
 array = np.array(pixels)
 array = array.reshape(width, height)
+
+
+import gridlines
+gd = gridlines.GridlineDetector(array)
+print gd.detect_gridlines()
