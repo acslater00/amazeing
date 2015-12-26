@@ -14,6 +14,22 @@ def pixels_to_highlight(graph, path):
         all_pixels |= pixels
     return all_pixels
 
+def pixels_to_highlight2(graph, path):
+    all_pixels = set()
+    for node_id in path:
+        node = graph.node(node_id)
+        pixels = set(node.pixels)
+        all_pixels |= pixels
+
+        # find all *white* neighbors of these pixels
+        # and color them too
+        neighbors = node.get_neighbors()
+        for neighbor in neighbors:
+            _r, _c = neighbor
+            if dotgraph.DotDetector._pixel_is_white(node.graph.array[_r][_c]):
+                all_pixels.add(neighbor)
+
+    return all_pixels
 
 def easy_maze():
     pixels = []
@@ -68,10 +84,18 @@ def hard_maze():
 
     cost, path = search.min_path2(graph, start_id, end_id)
 
-    pth = pixels_to_highlight(graph, path)
+    pth = pixels_to_highlight2(graph, path)
     with Drawing() as draw:
         draw.fill_color=Color("red")
         for pixel in pth:
             draw.point(pixel[1], pixel[0])
         draw(image)
         image.save(filename="mazes/hard-solved.png")
+
+
+
+
+
+
+
+
