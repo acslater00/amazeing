@@ -61,7 +61,8 @@ class Node(object):
 
 class DotGraph(object):
 
-    def __init__(self):
+    def __init__(self, array):
+        self.array = array
         self.nodes = []
         self.edges = defaultdict(list)
 
@@ -123,6 +124,12 @@ class DotDetector(object):
     def __init__(self, arr):
         self.array = arr
 
+        l, r, t, b = self.find_edges()
+        self.left_edge = l
+        self.right_edge = r
+        self.top_edge = t
+        self.bottom_edge = b
+
     @staticmethod
     def _pixel_is_white(pixel):
         return pixel > 220
@@ -135,6 +142,14 @@ class DotDetector(object):
     def _pixel_is_gray(pixel):
         return pixel < 200
 
+    @property
+    def width(self):
+        return self.array.shape[1]
+
+    @property
+    def height(self):
+        return self.array.shape[0]
+
     @staticmethod
     def _pixel_is(pixel, state):
         if state == DotDetector.STATE_BLACK:
@@ -145,16 +160,52 @@ class DotDetector(object):
             return DotDetector._pixel_is_gray(pixel)
         raise Exception("unknown pixel state")
 
+    def find_edges(self):
+        # left edge
+        left_edge = 0
+        for i in range(0, self.width):
+            column = self.array[:, i]
+            all_white = all([self._pixel_is_white(p) for p in column])
+            if not all_white:
+                left_edge = i
+                break
+
+        right_edge = self.width - 1
+        for i in range(self.width - 1, 0, -1):
+            column = self.array[:, i]
+            all_white = all([self._pixel_is_white(p) for p in column])
+            if not all_white:
+                right_edge = i
+                break
+
+        top_edge = 0
+        for i in range(0, self.height):
+            row = self.array[i]
+            all_white = all([self._pixel_is_white(p) for p in row])
+            if not all_white:
+                top_edge = i
+                break
+
+        bottom_edge = self.height - 1
+        for i in range(self.height - 1, 0, -1):
+            row = self.array[i]
+            all_white = all([self._pixel_is_white(p) for p in row])
+            if not all_white:
+                bottom_edge = i
+                break
+
+        return left_edge, right_edge, top_edge, bottom_edge
+
     # in this model, and edge between pixels is defined as
     # both pixels are white and they're adjacent
 
     def generate_graph(self):
-        start_row = 0
-        start_col = 0
+        start_row = self.top_edge
+        start_col = self.left_edge
 
         rows, cols = self.array.shape
-        end_row = rows - 1
-        end_col = cols - 1
+        end_row = self.bottom_edge
+        end_col = self.right_edge
 
         node_counter = 0
 
