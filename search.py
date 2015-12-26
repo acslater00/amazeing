@@ -60,8 +60,11 @@ def min_path2(graph, initial, terminal):
     visited = set()
     path = {}
 
-
+    ct = 0
     while q:
+        ct += 1
+        if ct % 1000 == 0:
+            print ct
         cost, v1, path = heappop(q)
 
         if v1 not in visited:
